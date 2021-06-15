@@ -26,31 +26,31 @@ class FormViewModel {
 
   var validatedEmail: AnyPublisher<String?, Never> {
     return $email
-      .map { email in
-        guard email.count != 0 else {
+      .map { emailText in
+        guard emailText.count != 0 else {
           self.emailPublisher.send("Email can't be blank")
           return nil
         }
 
-        guard email.validateEmail() else {
+        guard emailText.validateEmail() else {
           self.emailPublisher.send("Check your email. It must contain @ sign")
           return nil
         }
 
         self.emailPublisher.send("")
-        return email
+        return emailText
       }
       .eraseToAnyPublisher()
   }
 
   var validatePassword: AnyPublisher<String?, Never> {
     return $password
-      .map { password in
-        guard password.count != 0 else {
+      .map { passwordText in
+        guard passwordText.count != 0 else {
           self.passwordPublisher.send("Password can't be blank")
           return nil
         }
-        guard password.validatePassword() else {
+        guard passwordText.validatePassword() else {
           self.passwordPublisher.send("Password must contain "
                                         + "at least one uppercase letter, lowercase letter, "
                                         + "number digit, special characters and "
@@ -59,7 +59,7 @@ class FormViewModel {
         }
 
         self.passwordPublisher.send("")
-        return password
+        return passwordText
       }.eraseToAnyPublisher()
   }
 

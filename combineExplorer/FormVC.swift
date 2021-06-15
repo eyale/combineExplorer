@@ -10,6 +10,8 @@ import Combine
 
 class FormVC: UIViewController {
   // MARK: - Properties
+  var passwordIcon = UIImage(systemName: "eye")
+
 
   // Combine Subscribers
   var emailSubscriber: AnyCancellable?
@@ -104,6 +106,7 @@ extension FormVC {
     passwordTextField.autocorrectionType = .no
     passwordTextField.autocapitalizationType = .none
     passwordTextField.isSecureTextEntry = true
+    passwordTextField.tintColor = .lightGray
   }
 
   func setupLogingButton() {
@@ -127,23 +130,31 @@ extension FormVC {
     }
   }
   func setupPasswordIcon() {
-    if let passwordIcon = UIImage(systemName: "eye") /*, let passwordIconSlash = UIImage(systemName: "eye.slash") */ {
-      let imageView = UIImageView(frame: CGRect(x: 15,
-                                                y: 13,
-                                                width: 20,
-                                                height: 15))
-      passwordTextField.tintColor = .lightGray
-      imageView.image = passwordIcon
+    let imageView = UIImageView(frame: CGRect(x: 15,
+                                              y: 13,
+                                              width: 20,
+                                              height: 15))
+    let tap = UITapGestureRecognizer(target: self, action: #selector(togglePasswordVisibility))
+    imageView.addGestureRecognizer(tap)
+    imageView.isUserInteractionEnabled = true
+    imageView.image = passwordIcon
 
-      let imageContainerView = UIView(frame: CGRect(x: 0,
-                                                    y: 0,
-                                                    width: CGFloat(passwordTextField.frame.width / 7),
-                                                    height: passwordTextField.frame.height))
+    let imageContainerView = UIView(frame: CGRect(x: 0,
+                                                  y: 0,
+                                                  width: CGFloat(passwordTextField.frame.width / 7),
+                                                  height: passwordTextField.frame.height))
+    imageContainerView.addSubview(imageView)
+    passwordTextField.rightView = imageContainerView
+    passwordTextField.rightViewMode = .always
+  }
 
-      imageContainerView.addSubview(imageView)
-      passwordTextField.rightView = imageContainerView
-      passwordTextField.rightViewMode = .always
-    }
+  @objc func togglePasswordVisibility(sender: UIImageView) {
+    passwordTextField.isSecureTextEntry = !passwordTextField.isSecureTextEntry
+    passwordIcon = passwordTextField.isSecureTextEntry
+      ? UIImage(systemName: "eye")
+      : UIImage(systemName: "eye.slash")
+
+    setupPasswordIcon()
   }
 }
 // MARK: - IBActions
